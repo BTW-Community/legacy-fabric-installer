@@ -38,7 +38,7 @@ public class GithubCommit {
 		List<GithubCommit> versions;
 		Gson gson = new Gson();
 
-		URL githubURL = new URL("https://api.github.com/repos/minecraft-cursed-legacy/Cursed-fabric-loader/commits");
+		URL githubURL = new URL("https://api.github.com/repos/Arminias/Cursed-fabric-loader/commits");
 		InputStream githubStream = githubURL.openStream();
 
 		versions = gson.fromJson(new InputStreamReader(githubStream), new TypeToken<List<GithubCommit>>() {}.getType());

@@ -50,6 +50,7 @@ shadowJar {
 		exclude(dependency('com.formdev:flatlaf:.*'))
 	}
 	classifier = null
+	from("lib/cursed-fabric-loader.zip")
 }
 
 build.dependsOn shadowJar

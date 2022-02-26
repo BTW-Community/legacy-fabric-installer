@@ -74,11 +74,13 @@ public class Main {
 		argumentParser.ifPresent("mavenurl", s -> Reference.mavenServerUrl = s);
 		final String metaUrl = argumentParser.getOrDefault("metaurl", () -> "https://meta.fabricmc.net/");
 
-		GAME_VERSION_META = new HardcodedMetaHandler().addVersion("b1.7.3", true);
+		GAME_VERSION_META = new HardcodedMetaHandler().addVersion("1.5.2", true);
 		HardcodedMetaHandler metaHandler = new HardcodedMetaHandler();
 		List<GithubCommit> commits = GithubCommit.getCommits();
 		Collections.reverse(commits);
 		commits.forEach(githubCommit -> metaHandler.addVersion(githubCommit, true));
+		String g_sha = commits.get(commits.size()-1).sha.substring(0, 7) + "-btw";
+		metaHandler.addVersion(g_sha, true);
 		LOADER_META = metaHandler;
 
 		//Default to the help command in a headless environment

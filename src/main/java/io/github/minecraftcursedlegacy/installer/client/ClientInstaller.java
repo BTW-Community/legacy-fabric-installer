@@ -16,13 +16,15 @@
 
 package io.github.minecraftcursedlegacy.installer.client;
 
-import java.io.File;
-import java.io.IOException;
-
 import io.github.minecraftcursedlegacy.installer.util.InstallerProgress;
 import io.github.minecraftcursedlegacy.installer.util.MinecraftLaunchJson;
 import io.github.minecraftcursedlegacy.installer.util.Utils;
 import io.github.minecraftcursedlegacy.installer.util.data.Reference;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ClientInstaller {
 
@@ -36,7 +38,7 @@ public class ClientInstaller {
 		launchJson.inheritsFrom = gameVersion;
 
 		//Adds loader and the mappings
-		launchJson.libraries.add(new MinecraftLaunchJson.Library("com.github.minecraft-cursed-legacy:Plasma:build.9", Reference.mavenServerUrl));
+		launchJson.libraries.add(new MinecraftLaunchJson.Library("net.fabricmc:intermediary:1.5.2", "https://maven.legacyfabric.net/"));
 		launchJson.libraries.add(new MinecraftLaunchJson.Library(Reference.PACKAGE.replaceAll("/", ".") + ":" + Reference.LOADER_NAME + ":" + loaderVersion, Reference.mavenServerUrl));
 
 		File versionsDir = new File(mcDir, "versions");
@@ -59,6 +61,26 @@ public class ClientInstaller {
 		dummyJar.createNewFile();
 
 		Utils.writeToFile(profileJson, Utils.GSON.toJson(launchJson));
+
+		if (loaderVersion.contains("-btw")) {
+			File loaderLibDir = new File(mcDir,
+					"libraries/" + Reference.PACKAGE + "/" + Reference.LOADER_NAME + "/" + loaderVersion);
+
+			if (!loaderLibDir.exists()) {
+				loaderLibDir.mkdirs();
+			}
+			File loaderLibJar = new File(loaderLibDir, Reference.LOADER_NAME + "-" + loaderVersion + ".jar");
+			loaderLibJar.createNewFile();
+
+			InputStream loader_in = ClientInstaller.class.getClassLoader().getResource("cursed-fabric-loader.zip").openStream();
+			FileOutputStream f = new FileOutputStream(loaderLibJar);
+			while (true) {
+				int in = loader_in.read();
+				if (in == -1) break;
+				f.write(in);
+			}
+		}
+
 
 		progress.updateProgress(Utils.BUNDLE.getString("progress.done"));
 
